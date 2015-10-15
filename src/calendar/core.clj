@@ -1,5 +1,6 @@
 (ns calendar.core
   (:gen-class)
+  (:require [clojure.string :as str])
   (:import java.time.LocalDate))
 
 (defn- first-day-of-year
@@ -33,11 +34,16 @@
         (+ offset -1)
         (quot 7))))
 
+(defn- ansi-aware-count
+  "String length, sans ANSI control codes"
+  [s]
+  (count (str/replace s #"\033\[[0-9]+m" "")))
+
 (defn- center
   "Center-pads a length of text, e.g. (center 5 \"a\") ; => \"  a  \"."
   [n s]
   (let [s (str s)
-        c (- n (count s))
+        c (- n (ansi-aware-count s))
         h (quot c 2)
         r (rem c 2)]
     (apply str (concat
@@ -51,10 +57,13 @@
 
 (defn- format-day
   [day]
-  (format "%3d" (.getDayOfMonth day)))
+  (format (if (= day (LocalDate/now))
+            "\033[91m\033[1m%3d\033[0m" ; bold, bright red
+            "%3d")
+          (.getDayOfMonth day)))
 
 (defn- pad-right [n s]
-  (let [n (- n (count s))]
+  (let [n (- n (ansi-aware-count s))]
     (apply str s (repeat n \space))))
 
 (defn- format-week
