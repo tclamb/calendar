@@ -51,10 +51,6 @@
                  [s]
                  (repeat h \space)))))
 
-(defn- transpose [cs]
-  (let [n (count cs)]
-    (partition n (apply interleave cs))))
-
 (defn- format-day
   [day]
   (format (if (= day (LocalDate/now))
@@ -103,7 +99,7 @@
        (partition-by #(.getMonth %))
        (map format-month)
        (partition 3)
-       (mapcat transpose)
+       (mapcat (partial apply map list))
        (map format-line)
        (map println)
        dorun))
