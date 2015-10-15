@@ -1,6 +1,6 @@
 (ns calendar.core-test
-  (:require [clojure.test :refer :all]
-            [calendar.core :refer :all]))
+  (:require [calendar.core :refer :all]
+            [clojure.test :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."
