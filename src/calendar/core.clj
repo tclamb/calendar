@@ -82,10 +82,17 @@
        (interpose \space)
        (apply str)))
 
+(def ^:const ^:private days-of-week-line
+  (->> [\S \M \T \W \R \F \S]
+       (map (partial str "  "))
+       (apply str)
+       (pad-right 22)))
+
 (defn- format-month
   [month]
   (let [weeks (partition-by week-of-year month)]
-    (concat [(center 22 (.getMonth (first month)))]
+    (concat [(center 22 (.getMonth (first month)))
+             days-of-week-line]
             (map format-week weeks)
             (repeat (- 6 (count weeks)) (apply str (repeat 22 \space))))))
 
